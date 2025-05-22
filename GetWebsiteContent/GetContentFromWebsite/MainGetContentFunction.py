@@ -39,7 +39,7 @@ def fetch_content_from_website(row):
     # Robots.txt fetchen und Status überprüfen
     robots_url = get_robots_url(stripped_website_url)
     try:
-        robots_response = requests.get(robots_url, headers=header)
+        robots_response = requests.get(robots_url, headers=header, timeout=30)
     except:
         print(f"Beim Website-Aufruf gab einen Error: {website_url}")
         return {'is_valid': False, 'id': id, 'website': website_url, 'error': 'c;W', 'pricing_content': None, 'contact_email_adresses': None }
@@ -53,7 +53,7 @@ def fetch_content_from_website(row):
         return {'is_valid': False, 'id': id, 'website': website_url, 'error': 'd;M', 'pricing_content': None, 'contact_email_adresses': None  }
     
     # Main-Page fetchen und Status überprüfen
-    mainpage_response = requests.get(website_url, headers=header)
+    mainpage_response = requests.get(website_url, headers=header,timeout=30)
     
     if mainpage_response.status_code != 200:
         print(f"Fehler beim Abrufen folgender Main-Page der Website: {website_url} Status-Code: {mainpage_response.status_code}")
@@ -73,7 +73,7 @@ def fetch_content_from_website(row):
 
     if matched_legal_and_contact_links != None:
         for link in matched_legal_and_contact_links: 
-            legal_content_response = requests.get(website_url + "/" + link, headers=header)
+            legal_content_response = requests.get(website_url + "/" + link, headers=header, timeout=30)
             if legal_content_response.status_code == 200:        
                 content_for_email_extraction += legal_content_response.text + "\n"
 
@@ -93,7 +93,7 @@ def fetch_content_from_website(row):
         return {'is_valid': False, 'id': id, 'website': website_url, 'error': 'd;P', 'pricing_content': None, 'contact_email_adresses': None}
 
     # RawText des Preis-Seite fetchen und Status überprüfen
-    pricing_page_response = requests.get(pricing_page_link, headers=header)
+    pricing_page_response = requests.get(pricing_page_link, headers=header, timeout=30)
 
     if pricing_page_response.status_code != 200:
         print(f"Fehler beim Abrufen der Preis-Seite folgender Website: {website_url} Status-Code: {pricing_page_response.status_code}")
@@ -114,7 +114,7 @@ def fetch_content_from_website(row):
 
         # RawText der Unterseite der Pricing-Page fetchen und Status überprüfen
         pricing_sub_page_link = website_url + "/" + matched_link_pricing_page
-        pricing_sub_page_response = requests.get(pricing_sub_page_link, headers=header)
+        pricing_sub_page_response = requests.get(pricing_sub_page_link, headers=header, timeout=30)
 
         if pricing_sub_page_response.status_code != 200:
             print(f"Fehler beim Abrufen der Unterseite der Pricing-Page folgender Website: {website_url} Status-Code: {pricing_sub_page_response.status_code}")
